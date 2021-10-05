@@ -94,10 +94,10 @@ class MyLasso:
         return new_coord_weight, new_b0
 
 
-    def gen_model(self, lam: float, total_iters: int):
+    def gen_model(self, init_w, init_b0, lam: float, total_iters: int):
         gamma = self.calc_gammas(lam)
-        w = np.copy(self.initial_w)
-        b0 = self.initial_b0
+        w = np.copy(init_w)
+        b0 = init_b0
 
         run_book = {"score": [], "beta": [], "b0": []}
         iters = 0
@@ -124,26 +124,35 @@ class MyLasso:
 
     def fit(self, x: np.ndarray, y: np.ndarray, w: np.ndarray,
             b0: float, thresh: float, iters: int=1000,
-            lams: np.ndarray=None, nlam: int=20):
-        self.initialize(x, y, w, b)
+            lams: np.ndarray=None, nlam: int=20, warm=True):
+        self.initialize(x, y, w, b0)
         self.precomputation()
 
         if lams == None:
             lams = self.calc_lambdas(nlam)
 
+        init_w = w
+        init_b0 = b0
         for lam in lams:
-            model_score, model_w, model_b0 = self.gen_model(w, b0, lam)
+            model_score, model_w, model_b0 = self.gen_model(init_w, init_b0, lam, iters)
             model_dev = lu.deviance_func(self.x, self.y, model_w, model_b0)
             model_pde = 1 - (model_dev / self.null_dev)
             model_df = np.count_nonzero(model_w)
 
             if model_score < self.final_score:
-                self.finale_score, self.final_w, self.final_b0 = model_score, model_w, model_b0
+                self.finale_score = model_score
+                self.final_w = model_w
+                self.final_b0 = model_b0
 
             model_entry = {"score": model_score, "dev": model_dev, "%%dev": model_pde,
                            "df": model_df, "lambda": model_entry, "w": model_w, "b0": model_b0}
             for key, value in model_entry.items():
                 self.results[key].append(value)
+
+            if warm:
+                init_w = model_w
+                init_b0 = model_b0
+
 
     def get_results(self, print=True):
         if print:
