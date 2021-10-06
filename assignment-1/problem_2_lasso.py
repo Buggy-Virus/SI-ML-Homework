@@ -34,9 +34,6 @@ def create_func(p: int, coef_s: float, b0_s: float, noise_s: float, std_s: float
 
 
 def create_data(func: Callable, n: int, p: int, x_s: float, x_std: float) -> Tuple[np.ndarray, np.ndarray]:
-    # maybe this can just be the same npr normal 0, 1 dist everywhere
-    # I don't think it's the case that there will be a meaningful impact
-    # for this problem if my specific predictors aren't correlated
     x = np.ndarray
     for i in range(p):
         x = np.hstack(x, npr.normal(x_s * r0(), x_std * r0(), (n, 1)))

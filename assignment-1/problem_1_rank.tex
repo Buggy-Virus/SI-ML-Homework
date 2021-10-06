@@ -1,7 +1,7 @@
 %==============================================================================
 % Homework X, MATH-GA 2046 (Fall 2021)
 %==============================================================================
-\newcommand{\thisclass}{\bf MATH-GA 2046}
+\newcommand{\thisclass}{\bf MATH-GA 2046 }
 \newcommand{\thishw}{\bf Analytical HW 1}
 \newcommand{\myname}{Oliver Hare}
 \newcommand{\mylogin}{oph206}
@@ -14,8 +14,8 @@
 \documentclass[11pt]{article} % 10pt article, want AMS fonts.
 \makeatletter					% Make '@' accessible.
 \pagestyle{myheadings}				% We do our own page headers.
-\def\@oddhead{\bf \thisclass - \thishw\hfill \myname (\mylogin)
-\newline \today\hfill \mygithub} % Here they are.
+\def\@oddhead{\bf \thisclass - \thishw\hfill \myname (\mylogin)}
+%\newline \today\hfill \mygithub} % Here they are.
 \def\thesection{Problem\hskip-1em\ }		% Section headlines.
 \oddsidemargin=0in				% Left margin minus 1 inch.
 \evensidemargin=0in				% Same for even-numbered pages.
@@ -54,6 +54,8 @@
 
 \begin{document}
 \centerline{\LARGE\thishw}
+\centerline{github.com/Buggy-Virus/SI-ML-Homework/tree/master/assignment-1}
+\centerline{\today}
 
 \problem{1}
 % %%%%%%%%%%%%%%%%%%%  PROBLEM 1 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,7 +109,7 @@
     \end{align*}
 
     Note that in order for any column of $A'$ to not be used in the linear combination of any column of $A'A$, or in other words it isn't used once, it would require every coefficient to be 0 for every column of $A'A$.\\
-    Thus for the $j\text{th}$ column of $A'$ to never be used, where $0 \leq j \leq m$, it would require all values $a_{0j} \dots a_{nj}$ to all be zero, as for each column, these are the values of $A$ it has as it's coefficients, which is the $j\{th}$ row of $A$, which are the same values contained in the column itself. \\
+    Thus for the $j\text{th}$ column of $A'$ to never be used, where $0 \leq j \leq m$, it would require all values $a_{0j} \dots a_{nj}$ to all be zero, as for each column, these are the values of $A$ it has as it's coefficients, which is the $j\text{th}$ row of $A$, which are the same values contained in the column itself. \\
     As such it implies that were a column $A'$ to not be represented in any column of $A'A$ would require that it be a column of zeros itself. Implying that every nonzero column of $A'$ must be a nonzero term in at least one column of $A'A$. \\
     It follows then that the column basis of $A'$ must also be the column basis of $A'A$. Trivially since the column basis of $A'$ spans the columns of $A'$ it must span a collection of columns where each column is a linear combination of $A'$'s columns, and thus spans the columns of $A'A$. Additionally, were you to remove any single vector from the column basis of $A'$ it would no longer span $A'$ as it is the minimum spanning set, and as such it would not be able to form every column of $A'$ as a linear combination, and thus it would no longer be able to form every column of $A'A$ as a linear combination, as $A'A$ requires all columns of $A'$. \\
     This implies that the column basis of $A'$ is a minimum spanning set of $A'A$'s columns, additionally it is linearly independent by definition, thus it must also be the column basis of $A'A$. \\
