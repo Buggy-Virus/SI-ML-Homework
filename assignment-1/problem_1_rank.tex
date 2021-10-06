@@ -1,0 +1,122 @@
+%==============================================================================
+% Homework X, MATH-GA 2046 (Fall 2021)
+%==============================================================================
+\newcommand{\thisclass}{\bf MATH-GA 2046}
+\newcommand{\thishw}{\bf Analytical HW 1}
+\newcommand{\myname}{Oliver Hare}
+\newcommand{\mylogin}{oph206}
+\newcommand{\mygithub}{https://github.com/Buggy-Virus/SI-ML-Homework}
+
+%==============================================================================
+% Formatting parameters.
+%==============================================================================
+
+\documentclass[11pt]{article} % 10pt article, want AMS fonts.
+\makeatletter					% Make '@' accessible.
+\pagestyle{myheadings}				% We do our own page headers.
+\def\@oddhead{\bf \thisclass - \thishw\hfill \myname (\mylogin)
+\newline \today\hfill \mygithub} % Here they are.
+\def\thesection{Problem\hskip-1em\ }		% Section headlines.
+\oddsidemargin=0in				% Left margin minus 1 inch.
+\evensidemargin=0in				% Same for even-numbered pages.
+\textwidth=6.5in				% Text width (8.5in - margins).
+\topmargin=0in					% Top margin minus 1 inch.
+\headsep=0.2in					% Distance from header to body.
+\textheight=8in					% Body height (incl. footnotes)
+\skip\footins=4ex				% Space above first footnote.
+\hbadness=10000					% No "underfull hbox" messages.
+\makeatother					% Make '@' special again.
+
+%\usepackage{newalg}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{latexsym}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+%==============================================================================
+% Macros.
+%==============================================================================
+\newcommand{\problem}[1]{\section{#1}}		% Problem.
+\newcommand{\new}[1]{{\em #1\/}}		% New term (set in italics).
+\newcommand{\set}[1]{\{#1\}}			% Set (as in \set{1,2,3})
+\newcommand{\setof}[2]{\{\,{#1}|~{#2}\,\}}	% Set (as in \setof{x}{x > 0})
+\newcommand{\C}{\mathbb{C}}	                % Complex numbers.
+\newcommand{\N}{\mathbb{N}}                     % Positive integers.
+\newcommand{\Q}{\mathbb{Q}}                     % Rationals.
+\newcommand{\R}{\mathbb{R}}                     % Reals.
+\newcommand{\Z}{\mathbb{Z}}                     % Integers.
+\newcommand{\compl}[1]{\overline{#1}}		% Complement of ...
+
+%==============================================================================
+% Title.
+%==============================================================================
+
+\begin{document}
+\centerline{\LARGE\thishw}
+
+\problem{1}
+% %%%%%%%%%%%%%%%%%%%  PROBLEM 1 %%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    We want to show that for any matrix $A$ it is the case that $\text{rank}(A) = \text{rank}(A'A)$, where $A'$ is the transpose. Consider some matrix $A$ with dimensions $m \times n$, and it's transpose $A'$. If we can represent $A$ as the following:
+
+    \begin{align*}
+        \begin{bmatrix}
+            a_{00} & a_{01} & \dots  & a_{0n}  \\
+            a_{10} & a_{11} &        & \vdots  \\
+            \vdots  &       & \ddots &         \\
+            a_{m0} & \dots  &        & a_{mn}
+        \end{bmatrix}
+    \end{align*}
+
+    Thus for the product, $A'A$ we have the $n \times n$ matrix:
+
+    \begin{align*}
+        \begin{bmatrix}
+            a_{00}^2 + a_{10}^2 + \dots + a_{m0}^2             & \dots  & a_{00}a_{0n} + a_{10}a_{1n} + \dots + a_{m0}a_{mn}  \\
+            \vdots                                             & \ddots & \vdots \\
+            a_{0n}a_{00} + a_{1n}a_{10} + \dots + a_{mn}a_{m0} & \dots  & a_{0n}^2 + a_{1n}^2 + \dots + a_{mn}^2
+        \end{bmatrix}
+    \end{align*}
+
+    Note that alternatively we could think of $A'A$ as the collection of its columns concatenated together along the horizontal axis, and this collection of columns defines it's column space or $\text{col}(A'A)$. Then we can represent the first column as the linear combination of each column of $A'$, where the coefficients are a column of $A$ (note that any column of $A$ corresponds to a row of $A'$). Thus for $0 \leq i \leq n$ we can represent any arbitrary column of $A'A$ as:
+
+    \begin{align*}
+        \begin{bmatrix}
+            a_{00} & \dots  & a_{0m} \\
+            \vdots & \ddots & \vdots \\
+            a_{n0} & \dots  & a_{nm}
+        \end{bmatrix}
+        \begin{bmatrix}
+            a_{0i} \\
+            \vdots \\
+            a_{mi}
+        \end{bmatrix}
+        =
+        a_{0i} \begin{bmatrix}
+            a_{00} \\
+            \vdots \\
+            a_{n0}
+        \end{bmatrix}
+        + \dots +
+        a_{mi} \begin{bmatrix}
+            a_{0m} \\
+            \vdots \\
+            a_{nm}
+        \end{bmatrix}
+    \end{align*}
+
+    Note that in order for any column of $A'$ to not be used in the linear combination of any column of $A'A$, or in other words it isn't used once, it would require every coefficient to be 0 for every column of $A'A$.\\
+    Thus for the $j\text{th}$ column of $A'$ to never be used, where $0 \leq j \leq m$, it would require all values $a_{0j} \dots a_{nj}$ to all be zero, as for each column, these are the values of $A$ it has as it's coefficients, which is the $j\{th}$ row of $A$, which are the same values contained in the column itself. \\
+    As such it implies that were a column $A'$ to not be represented in any column of $A'A$ would require that it be a column of zeros itself. Implying that every nonzero column of $A'$ must be a nonzero term in at least one column of $A'A$. \\
+    It follows then that the column basis of $A'$ must also be the column basis of $A'A$. Trivially since the column basis of $A'$ spans the columns of $A'$ it must span a collection of columns where each column is a linear combination of $A'$'s columns, and thus spans the columns of $A'A$. Additionally, were you to remove any single vector from the column basis of $A'$ it would no longer span $A'$ as it is the minimum spanning set, and as such it would not be able to form every column of $A'$ as a linear combination, and thus it would no longer be able to form every column of $A'A$ as a linear combination, as $A'A$ requires all columns of $A'$. \\
+    This implies that the column basis of $A'$ is a minimum spanning set of $A'A$'s columns, additionally it is linearly independent by definition, thus it must also be the column basis of $A'A$. \\
+    The dimension of the column basis of a matrix is the same as the dimensions of the row basis of a matrix, and this value is equal to the rank of the matrix, we have:
+
+    \begin{align*}
+        \text{rank}(A') = \text{rank}(A) = \text{rank}(A'A)
+    \end{align*}
+
+\end{enumerate}
+% %%%%%%%%%%%%%%%%%%%  PROBLEM 1 %%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
