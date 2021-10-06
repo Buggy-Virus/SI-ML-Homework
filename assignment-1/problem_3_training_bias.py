@@ -51,7 +51,8 @@ def get_curves(
     curve_func: Callable,
     max_iterations: int,
     max_complexity: int,
-    training_size: int
+    training_size: int,
+    var_num: int
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
 
     x_coords = np.arange(max_complexity + 1)
@@ -62,8 +63,8 @@ def get_curves(
         blue_line = np.ndarray([])
         red_line = np.ndarray([])
 
-        for i in range(complexity_max + 1):
-            x = npr.normal(x_mean, x_std, (2 * training_size, var_num))
+        for i in range(max_complexity + 1):
+            x = npr.normal(X_MEAN, X_STD, (2 * training_size, var_num))
             y = np.apply_along_axis(curve_func, 1, x)[np.newaxis].T
 
             x_training, x_test = np.vsplit(x, 2)
