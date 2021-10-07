@@ -1,5 +1,5 @@
 import glmnet_python
-from glmnet import glmnet, glmnetPrint
+from glmnet import glmnet
 from my_lasso import MyLasso
 
 import numpy as np
@@ -33,10 +33,19 @@ def create_func(p: int, coef_s: float, b0_s: float, noise_s: float, std_s: float
     return lambda vars: coefs * vars + npr.normal(noise_s * r0(), std_s * r0())
 
 
+def given_func(point: np.ndarray) -> float:
+    result = 3 * point[0] - 17 * point[1] + 5 * point[2] + npr.randn()
+    return result
+
+
 def create_data(func: Callable, n: int, p: int, x_s: float, x_std: float) -> Tuple[np.ndarray, np.ndarray]:
-    x = np.ndarray
+    x = None
     for i in range(p):
-        x = np.hstack(x, npr.normal(x_s * r0(), x_std * r0(), (n, 1)))
+        new_col = npr.normal(x_s * (npr.rand() - 0.5), x_std * npr.rand(), (n, 1))
+        if x is not None:
+            x = np.hstack((x, new_col))
+        else:
+            x = new_col
 
     y = np.apply_along_axis(func, 1, x)[np.newaxis].T
 
@@ -52,14 +61,18 @@ def evaluate_glmnet(x: np.ndarray, y: np.ndarray, w: np.ndarray, b0: float) -> g
 
 
 def main():
-    n, p = DIMDICT["small"]
-    func = create_func(p, COEF_MAG, INTER_MAG, NOISE_MAG, NOISE_STD)
-    x, y = create_data(func, n, p, X_MAG, X_STD)
+    n = 2000
+    p = 3
 
-    w = npr.rand(p, 1)
-    w = (n / np.sum(w)) * w
+    # func = create_func(p, COEF_MAG, INTER_MAG, NOISE_MAG, NOISE_STD)
+    x, y = create_data(given_func, n, p, X_MAG, X_STD)
+    w = np.ones((p, 1))
 
-    glmnet_model = glmnet(x=np.copy(x), y=np.copy(y), family='gaussian', weights=w, alpha=1, nlamba=20)
+    print(w.shape)
+    print(x.shape)
+    print(y.shape)
+
+    glmnet_model = glmnet(x=np.copy(x), y=np.copy(y), family ='gaussian', alpha=1, nlambda=20)
     mylasso_model = MyLasso().fit(x, y, w, y.mean(), lams=glmnet_model["lambdau"])
 
     glmnetPrint(glmnet_model)

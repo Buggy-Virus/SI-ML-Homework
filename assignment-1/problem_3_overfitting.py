@@ -163,6 +163,8 @@ def plot_curves(
 
 
 def main():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+
     func = generat_curve_function(VAR_NUM, DEGREE)
     b_lines, r_lines, b_blue, b_red, x = get_curves(func, TRIALS_N, COMPLEXITY_MAX, TRAIN_N, VAR_NUM) # long line
     plot_curves(b_lines, r_lines, b_blue, b_red, x, TRIALS_N)
