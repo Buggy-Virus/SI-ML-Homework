@@ -1,18 +1,13 @@
 import glmnet_python
 from glmnet import glmnet
+
 from my_lasso import MyLasso
 
 import numpy as np
 import numpy.random as npr
+import pandas as pd
 
 from typing import Callable, Tuple
-
-# DataSet Parameters
-DIMDICT = {
-    "small": [30, 2],
-    "med": [200, 15],
-    "big": [2000, 100]
-}
 
 # Function And Data Generation
 COEF_MAG = 4
@@ -20,7 +15,7 @@ INTER_MAG = 4
 NOISE_MAG = 2
 NOISE_STD = 1.5
 X_MAG = 10
-X_STD = 4
+X_STD = 1
 
 
 def r0():
@@ -61,6 +56,8 @@ def evaluate_glmnet(x: np.ndarray, y: np.ndarray, w: np.ndarray, b0: float) -> g
 
 
 def main():
+    np.random.seed(50)
+
     n = 2000
     p = 3
 
@@ -68,15 +65,21 @@ def main():
     x, y = create_data(given_func, n, p, X_MAG, X_STD)
     w = np.ones((p, 1))
 
-    print(w.shape)
-    print(x.shape)
-    print(y.shape)
+    glmnet_model = glmnet(x=np.copy(x), y=np.copy(y), family ='gaussian', alpha=1, nlambda=40)
+    mylasso_model = MyLasso()
+    mylasso_model.fit(x, y, w, y.mean(), lams=glmnet_model["lambdau"])
 
-    glmnet_model = glmnet(x=np.copy(x), y=np.copy(y), family ='gaussian', alpha=1, nlambda=20)
-    mylasso_model = MyLasso().fit(x, y, w, y.mean(), lams=glmnet_model["lambdau"])
+    betas = pd.DataFrame(glmnet_model["beta"].T, columns=["x1", "x2", "x3"])
+    df = pd.DataFrame(glmnet_model["df"], columns = ['df'])
+    lam = pd.DataFrame(glmnet_model["lambdau"], columns = ['lambdau'])
+    dev = pd.DataFrame(glmnet_model["dev"], columns = ['dev'])
+    nulldev = pd.DataFrame(glmnet_model["nulldev"], columns = ['nulldev'])
 
-    glmnetPrint(glmnet_model)
+    print(dev.join([nulldev, df, lam, betas]))
+
     mylasso_model.get_results()
+
+    print("here")
 
 
 if __name__ == "__main__":
