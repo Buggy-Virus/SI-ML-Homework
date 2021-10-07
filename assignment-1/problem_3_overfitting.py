@@ -121,7 +121,11 @@ def get_curves(
             red_lines = red_line
 
     blue_lines = np.clip(blue_lines, 0, np.max(blue_lines[:,0]))
-    red_lines = np.clip(red_lines, 0, np.max(red_lines[:,max_complexity]))
+    red_lines = np.clip(red_lines, 0, np.max(red_lines[:,max_complexity])) #clip the most extreme outliers
+    # generally all curves sit below the highest value a red curve reaches at 35 complexity, but I have
+    # seen instances where one model blows up and the error rockets many order of magnitudes higher than
+    # everything else and messes with the average and the plot. So this is an admittedly hacky way to deal
+    # with the problem right before the assignment is due.
 
     bright_blue = np.mean(blue_lines, axis=0)
     bright_red = np.mean(red_lines, axis=0)
@@ -157,14 +161,12 @@ def plot_curves(
     plt.title("Test Error vs. Complexity")
 
     old_min, old_max = plt.ylim()
-    plt.ylim(old_max * (np.min(b_b_log) / np.min(b_logs)) / np.max(r_logs), old_max * np.max(b_r_log) / np.max(r_logs))
+    plt.ylim((np.min(b_b_log) / np.min(b_logs)) / (np.max(r_logs) / 10), old_max * np.max(b_r_log) / np.max(r_logs))
 
     plt.show()
 
 
 def main():
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-
     func = generat_curve_function(VAR_NUM, DEGREE)
     b_lines, r_lines, b_blue, b_red, x = get_curves(func, TRIALS_N, COMPLEXITY_MAX, TRAIN_N, VAR_NUM) # long line
     plot_curves(b_lines, r_lines, b_blue, b_red, x, TRIALS_N)
